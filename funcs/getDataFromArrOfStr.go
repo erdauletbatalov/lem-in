@@ -7,69 +7,79 @@ import (
 )
 
 func (g *Graph) GetDataFromArrOfStr(example []string) error {
+	// Check for min arg count
 	if len(example) < 6 {
-		return fmt.Errorf("ERROR: invalid data format")
+		return fmt.Errorf("ERROR: invalid data format1")
 	}
-
+	// Check if first arg is num and > 0
 	ants, err := strconv.Atoi(example[0])
 	if err != nil {
-		return fmt.Errorf("ERROR: invalid data format")
+		return fmt.Errorf("ERROR: invalid data format2")
 	}
-	if ants == 0 {
-		return fmt.Errorf("ERROR: invalid data format")
+	if ants <= 0 {
+		return fmt.Errorf("ERROR: invalid data format3")
 	}
 	g.AddAnts(ants)
 
-	if example[1] != "##start" {
-		return fmt.Errorf("ERROR: invalid data format")
+	startIndex, err := findTriggerIndex("##start", example)
+	endIndex, err := findTriggerIndex("##end", example)
+	if err != nil {
+		return err
 	}
+	var from int
+	if startIndex > endIndex {
+		from = endIndex
+	} else {
+		from = startIndex
+	}
+	countOfVertexes, err := g.fromStartOrEnd(example, from, 0)
+	if err != nil {
+		return err
+	}
+	if countOfVertexes <= 1
 
-	indexStartOfEdges := 0
+	return nil
+}
 
-	for i := 2; i < len(example); i++ {
-		if example[i] == "##end" {
-			if i+2 >= len(example) {
-				return fmt.Errorf("ERROR: invalid data format")
+func (g *Graph) fromStartOrEnd(example []string, start int, countOfVertexes int) (int, error) {
+	count := countOfVertexes
+	for i := start + 2; i < len(example); i++ {
+		// If comment then skip
+		if example[i] == "##end" || example[i] == "##start" {
+			var err error
+			count, err = g.fromStartOrEnd(example, i, count)
+			if err != nil {
+				return 0, fmt.Errorf("ERROR: invalid data forma11 %v", i)
 			}
-			line := strings.Split(example[i+1], " ")
-			if len(line) != 3 {
-				return fmt.Errorf("ERROR: invalid data format")
-			}
-			g.AddVertex(line[0])
-			g.End = line[0]
-			indexStartOfEdges = i + 2
-			for index := 1; index < 3; index++ {
-				_, errLine := strconv.Atoi(line[index])
-				if errLine != nil {
-					return fmt.Errorf("ERROR: invalid data format")
-				}
-			}
-			// add edges
-			for j := indexStartOfEdges; j < len(example); j++ {
-				edgeLines := strings.Split(example[j], "-")
-				if len(edgeLines) != 2 {
-					return fmt.Errorf("ERROR: invalid data format")
-				}
+			break
+		}
+		if example[i][0] == '#' {
+			continue
+		}
+		edgeLines := strings.Split(example[i], "-")
+		if len(edgeLines) == 2 || !strings.Contains(example[i], " ") {
+			for j := i; j < len(example); j++ {
 				errAddEdge := g.AddEdge(edgeLines[0], edgeLines[1])
 				if errAddEdge != nil {
-					return fmt.Errorf("ERROR: invalid data format")
+					return 0, fmt.Errorf("ERROR: invalid data format9")
 				}
 			}
 			break
+		}
 
+		vertexLines := strings.Split(example[i], " ")
+		if len(vertexLines) != 3 {
+			return 0, fmt.Errorf("ERROR: invalid data forma11 %v", i)
 		}
-		line := strings.Split(example[i], " ")
-		if len(line) != 3 {
-			return fmt.Errorf("ERROR: invalid data format2 %v", i)
-		}
-		g.AddVertex(line[0])
-		g.Start = line[0]
+		g.AddVertex(vertexLines[0])
+		count++
 		for index := 1; index < 3; index++ {
-			_, errLine := strconv.Atoi(line[index])
+			_, errLine := strconv.Atoi(vertexLines[index])
 			if errLine != nil {
-				return fmt.Errorf("ERROR: invalid data format")
+				return 0, fmt.Errorf("ERROR: invalid data format12")
 			}
 		}
+
 	}
-	return nil
+	return count, nil
 }

@@ -11,11 +11,11 @@ func (g *Graph) AddEdge(from, to string) error {
 	//check error
 	if fromVertex == nil || toVertex == nil {
 		return err
-	} else if contains(fromVertex.Adjacent, to) {
+	} else if contains(fromVertex.Adjacents, to) {
 		return err
 	} else {
 		//add edge
-		fromVertex.Adjacent = append(fromVertex.Adjacent, toVertex)
+		fromVertex.Adjacents = append(fromVertex.Adjacents, toVertex)
 		return nil
 	}
 }

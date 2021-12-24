@@ -7,11 +7,12 @@ type Graph struct {
 	Ants     int
 	Start    string
 	End      string
+	Edges    int
 }
 
 // Vertex structure
 type Vertex struct {
-	Key      string
-	Adjacent []*Vertex
-	Prev     *Vertex
+	Key       string
+	Adjacents []*Vertex
+	Prev      *Vertex
 }

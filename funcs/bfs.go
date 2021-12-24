@@ -1,6 +1,8 @@
 package funcs
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (g *Graph) BreadthFirstSearch(from, to string) {
 	//get Vertex
@@ -14,10 +16,10 @@ func (g *Graph) BreadthFirstSearch(from, to string) {
 		var visitedVertex map[*Vertex]bool
 		visitedVertex = make(map[*Vertex]bool)
 		current := fromVertex
-		queue := current.Adjacent
+		queue := current.Adjacents
 		for {
 			if current == toVertex {
-				fmt.Println("I've found the path!")
+				fmt.Println("I've found the shortest path!")
 				end := current
 				path := []*Vertex{}
 				for end != nil {
@@ -35,22 +37,21 @@ func (g *Graph) BreadthFirstSearch(from, to string) {
 				}
 				return
 			}
-			for _, v := range current.Adjacent {
+			for _, v := range current.Adjacents {
 				if !visitedVertex[v] {
 					queue = append(queue, v)
 					v.Prev = current
 					visitedVertex[v] = true
 				}
 			}
-			if current != queue[0] {
-				current = queue[0]
-			} else {
+			if len(queue) == 1 {
 				fmt.Println("There is no such path =(")
 				return
 			}
 			if len(queue) != 1 {
 				queue = queue[1:]
 			}
+			current = queue[0]
 		}
 	}
 }

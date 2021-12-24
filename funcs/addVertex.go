@@ -11,13 +11,3 @@ func (g *Graph) AddVertex(k string) {
 		g.Vertices = append(g.Vertices, &Vertex{Key: k})
 	}
 }
-
-func (g *Graph) Print() {
-	for _, val := range g.Vertices {
-		fmt.Printf("\nVertex %v : ", val.Key)
-		for _, v := range val.Adjacent {
-			fmt.Printf("%v ", v.Key)
-		}
-	}
-	fmt.Println()
-}
