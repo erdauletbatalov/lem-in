@@ -21,35 +21,37 @@ func (g *Graph) GetDataFromArrOfStr(example []string) error {
 	}
 	g.AddAnts(ants)
 
-	startIndex, err := findTriggerIndex("##start", example)
-	endIndex, err := findTriggerIndex("##end", example)
+	startIndex, err := g.findStartIndex(example)
 	if err != nil {
 		return err
 	}
+	endIndex, err := g.findEndIndex(example)
+	if err != nil {
+		return err
+	}
+
 	var from int
 	if startIndex > endIndex {
 		from = endIndex
 	} else {
 		from = startIndex
 	}
-	countOfVertexes, err := g.fromStartOrEnd(example, from, 0)
+	err = g.fromStartOrEnd(example, from)
 	if err != nil {
 		return err
 	}
-	if countOfVertexes <= 1
 
 	return nil
 }
 
-func (g *Graph) fromStartOrEnd(example []string, start int, countOfVertexes int) (int, error) {
-	count := countOfVertexes
+func (g *Graph) fromStartOrEnd(example []string, start int) error {
 	for i := start + 2; i < len(example); i++ {
 		// If comment then skip
 		if example[i] == "##end" || example[i] == "##start" {
 			var err error
-			count, err = g.fromStartOrEnd(example, i, count)
+			err = g.fromStartOrEnd(example, i)
 			if err != nil {
-				return 0, fmt.Errorf("ERROR: invalid data forma11 %v", i)
+				return fmt.Errorf("ERROR: invalid data forma11 %v", i)
 			}
 			break
 		}
@@ -61,7 +63,7 @@ func (g *Graph) fromStartOrEnd(example []string, start int, countOfVertexes int)
 			for j := i; j < len(example); j++ {
 				errAddEdge := g.AddEdge(edgeLines[0], edgeLines[1])
 				if errAddEdge != nil {
-					return 0, fmt.Errorf("ERROR: invalid data format9")
+					return fmt.Errorf("ERROR: invalid data format9")
 				}
 			}
 			break
@@ -69,17 +71,16 @@ func (g *Graph) fromStartOrEnd(example []string, start int, countOfVertexes int)
 
 		vertexLines := strings.Split(example[i], " ")
 		if len(vertexLines) != 3 {
-			return 0, fmt.Errorf("ERROR: invalid data forma11 %v", i)
+			return fmt.Errorf("ERROR: invalid data forma11 %v", i)
 		}
 		g.AddVertex(vertexLines[0])
-		count++
 		for index := 1; index < 3; index++ {
 			_, errLine := strconv.Atoi(vertexLines[index])
 			if errLine != nil {
-				return 0, fmt.Errorf("ERROR: invalid data format12")
+				return fmt.Errorf("ERROR: invalid data format12")
 			}
 		}
 
 	}
-	return count, nil
+	return nil
 }
