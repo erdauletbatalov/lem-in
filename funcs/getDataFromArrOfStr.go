@@ -44,14 +44,15 @@ func (g *Graph) GetDataFromArrOfStr(example []string) error {
 	return nil
 }
 
-func (g *Graph) fromStartOrEnd(example []string, start int) error {
-	for i := start + 2; i < len(example); i++ {
+func (g *Graph) fromStartOrEnd(example []string, from int) error {
+	for i := from + 2; i < len(example); i++ {
 		// If comment then skip
 		if example[i] == "##end" || example[i] == "##start" {
 			var err error
 			err = g.fromStartOrEnd(example, i)
 			if err != nil {
-				return fmt.Errorf("ERROR: invalid data forma11 %v", i)
+				fmt.Println(1)
+				return fmt.Errorf("ERROR: invalid data formatFromSOE %v", i)
 			}
 			break
 		}
@@ -61,9 +62,15 @@ func (g *Graph) fromStartOrEnd(example []string, start int) error {
 		edgeLines := strings.Split(example[i], "-")
 		if len(edgeLines) == 2 || !strings.Contains(example[i], " ") {
 			for j := i; j < len(example); j++ {
-				errAddEdge := g.AddEdge(edgeLines[0], edgeLines[1])
-				if errAddEdge != nil {
-					return fmt.Errorf("ERROR: invalid data format9")
+				edgeLines := strings.Split(example[j], "-")
+				if len(edgeLines) == 2 || !strings.Contains(example[i], " ") {
+					errAddEdge := g.AddEdge(edgeLines[0], edgeLines[1])
+					if errAddEdge != nil {
+						fmt.Println(j)
+						return fmt.Errorf("ERROR: invalid data format9")
+					}
+				} else {
+					return fmt.Errorf("ERROR: invalid data formatedgesError %v", j)
 				}
 			}
 			break
@@ -71,12 +78,14 @@ func (g *Graph) fromStartOrEnd(example []string, start int) error {
 
 		vertexLines := strings.Split(example[i], " ")
 		if len(vertexLines) != 3 {
-			return fmt.Errorf("ERROR: invalid data forma11 %v", i)
+			fmt.Println(3)
+			return fmt.Errorf("ERROR: invalid data format11 %v", i)
 		}
 		g.AddVertex(vertexLines[0])
 		for index := 1; index < 3; index++ {
 			_, errLine := strconv.Atoi(vertexLines[index])
 			if errLine != nil {
+				fmt.Println(4)
 				return fmt.Errorf("ERROR: invalid data format12")
 			}
 		}

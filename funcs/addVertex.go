@@ -8,6 +8,7 @@ func (g *Graph) AddVertex(k string) {
 		err := fmt.Errorf("Vertex %v not added because it is an existing Key", k)
 		fmt.Println(err.Error())
 	} else {
+		fmt.Printf("%v vertex aded\n", k)
 		g.Vertices = append(g.Vertices, &Vertex{Key: k})
 	}
 }

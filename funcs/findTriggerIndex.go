@@ -9,7 +9,9 @@ import (
 func (g *Graph) findStartIndex(example []string) (int, error) {
 	for i, val := range example {
 		if val == "##start" && isThereVertexInNextLine(example, "##start", i) {
-			g.Start = example[i+1]
+			vertexLines := strings.Split(example[i+1], " ")
+			g.Start = vertexLines[0]
+			g.AddVertex(vertexLines[0])
 			return i, nil
 		}
 	}
@@ -19,7 +21,9 @@ func (g *Graph) findStartIndex(example []string) (int, error) {
 func (g *Graph) findEndIndex(example []string) (int, error) {
 	for i, val := range example {
 		if val == "##end" && isThereVertexInNextLine(example, "##end", i) {
-			g.End = example[i+1]
+			vertexLines := strings.Split(example[i+1], " ")
+			g.End = vertexLines[0]
+			g.AddVertex(vertexLines[0])
 			return i, nil
 		}
 	}
